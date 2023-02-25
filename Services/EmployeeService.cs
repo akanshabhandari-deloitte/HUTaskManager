@@ -45,6 +45,7 @@ public class EmployeeService:IEmployeeService
          List < Employee > empList;
         try {
             empList = _context.Set < Employee > ().ToList();
+            Console.WriteLine(empList);
         } catch (Exception) {
             throw;
         }

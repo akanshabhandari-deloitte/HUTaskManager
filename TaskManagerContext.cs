@@ -8,6 +8,8 @@ namespace TaskManagerApi;
 public class TaskManagerContext : DbContext
     {
         public DbSet<Employee>? Employees { get; set; }
+         public DbSet<Project>? Projects { get; set; }
+          public DbSet<Issue>? Issues { get; set; }
 
         public TaskManagerContext(DbContextOptions options):base(options)
         {

@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace TaskManagerApi.Models;
 public class Employee
@@ -33,5 +34,8 @@ public class Employee
             get;
             set;
         }
+
+       [JsonIgnore]
+        public virtual List<Project>? Projects { get; set; }   
 
     }

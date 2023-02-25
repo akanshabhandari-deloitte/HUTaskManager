@@ -14,6 +14,8 @@ var connectionString = builder.Configuration["ConnectionString:TaskManagerDB"];/
 builder.Services.AddDbContext<TaskManagerContext>(opts =>
                                                  opts.UseMySql(connectionString,ServerVersion.AutoDetect(connectionString)));
 builder.Services.AddScoped<IEmployeeService, EmployeeService>();
+builder.Services.AddScoped<IProjectService, ProjectService>();
+builder.Services.AddScoped<IIssueService, IssueService>();
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
