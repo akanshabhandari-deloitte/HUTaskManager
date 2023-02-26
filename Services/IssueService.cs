@@ -23,12 +23,12 @@ public class IssueService:IIssueService
     }
 
  
-    public ResponseModel SaveIssue(int id,int reporter_id,int assignee_id,Issue issueModel)
+    public ResponseModel SaveIssue(int id,int reporter_id,Issue issueModel)
     {
          ResponseModel model = new ResponseModel();
         //   Console.Write("------------------------"+issueModel.Type);
         //         Console.Write("hi"+"-----"+id+"------"+issueModel.Description);
-                 Console.Write("--assigne----------------------"+assignee_id);
+                //  Console.Write("--assigne----------------------"+assignee_id);
 
       Issue _issue=new Issue();
       _issue.Description=issueModel.Description;
@@ -54,10 +54,10 @@ public class IssueService:IIssueService
          list1 = _context.Set < Employee > ().ToList(); 
         //   Console.WriteLine("hibye");
         //  Console.WriteLine(list);
-        var assignee_obj =list1.FirstOrDefault(x => x.EmployeeId==assignee_id); 
+        // var assignee_obj =list1.FirstOrDefault(x => x.EmployeeId==assignee_id); 
           var reporter_obj =list1.FirstOrDefault(x => x.EmployeeId==reporter_id);  
         // Console.WriteLine(obj);
-         _issue.Assginee=assignee_obj;
+        //  _issue.Assginee=assignee_obj;
          _issue.Reporter=reporter_obj;
 
 
@@ -102,39 +102,101 @@ public class IssueService:IIssueService
     }
 
 
-public void UpdateIssue(int id,Issue updatedIssue,int assignee_id)
+public void UpdateIssue(int id,Issue updatedIssue)
 {
+    Console.WriteLine("--------updatedIssue 1 service");
     var issueToUpdate = _context.Find < Issue > (id);
     Console.WriteLine(issueToUpdate+"--------updatedIssue service"+issueToUpdate.Description+updatedIssue.Description);
-    if(issueToUpdate!=null && assignee_id==0)
+    if(issueToUpdate!=null)
     {
         issueToUpdate.Title = updatedIssue.Title;
         issueToUpdate.Description = updatedIssue.Description;
         issueToUpdate.Status = updatedIssue.Status;
         issueToUpdate.Type = updatedIssue.Type;
-        // issueToUpdate.Assginee= updatedIssue.Assginee;
-         Console.WriteLine("--------updatedIssue service1---- ");
         _context.Update < Issue > (issueToUpdate);
          _context.SaveChanges();
-          Console.WriteLine("--------updatedIssue service1---- ");
     }
-     else 
-    {
-        issueToUpdate.Title = updatedIssue.Title;
-        issueToUpdate.Description = updatedIssue.Description;
-        issueToUpdate.Status = updatedIssue.Status;
-        issueToUpdate.Type = updatedIssue.Type;
-         Console.WriteLine("--------updatedIssue service2");
-     
-        List<Employee> list1 = _context.Set < Employee > ().ToList(); 
-        var assignee_obj =list1.FirstOrDefault(x => x.EmployeeId==assignee_id); 
-         issueToUpdate.Assginee=assignee_obj;
-         Console.WriteLine("-------------update");
-        _context.Update < Issue > (issueToUpdate);
-         _context.SaveChanges();
-          Console.WriteLine("-------------1111111111111111update");
-    }
-     Console.WriteLine("--------updatedIssue service out");
 }
 
+public List<Issue> GetIssuesByProject(int id)
+    {
+        Issue? issue=new Issue();
+          IEnumerable<Issue> list=new List<Issue>();
+          
+
+        list=_context.Issues.Where(p=>p.Project.Id==id);
+         Console.WriteLine("---------"+list.ToList());
+        return list.ToList();
+    }
+
+    public List<Issue> GetDetailsOfIssuesInProject(int project_id,int issue_id)
+    {
+        IEnumerable<Issue> list;
+        // IEnumerable<Issue> list=new List<Issue>();
+          
+
+        list= _context.Issues.Where(p=>p.Project.Id==project_id && p.Id==issue_id);
+        //  Console.WriteLine("---------"+list.ToList());
+        return list.ToList();
+    }
+
+
+     public bool DeleteIssueUnderAProject(int projectId,int issueId)
+    {
+        var issue =_context.Issues.FirstOrDefault(p=>p.Project.Id==projectId && p.Id==issueId);
+
+        if (issue == null)
+        {
+            return false;
+        }
+
+        _context.Issues.Remove(issue);
+        _context.SaveChanges();
+
+        return true;
+    }
+
+    public void UpdateIssueUnderAProject(int project_id, int issue_id, Issue updatedIssue)
+    {
+    var issueToUpdate =_context.Issues.FirstOrDefault(p=>p.Project.Id==project_id && p.Id==issue_id);
+    Console.WriteLine(issueToUpdate+"--------updatedIssue service"+issueToUpdate.Description+updatedIssue.Description);
+    if(issueToUpdate!=null)
+    {
+        issueToUpdate.Title = updatedIssue.Title;
+        issueToUpdate.Description = updatedIssue.Description;
+        issueToUpdate.Status = updatedIssue.Status;
+        issueToUpdate.Type = updatedIssue.Type;
+        _context.Update < Issue > (issueToUpdate);
+         _context.SaveChanges();
+    }
+    }
+
+    public void AssigneIssueToUser(int issue_id,int user_id)
+    {
+         var issueToUpdate =_context.Issues.FirstOrDefault(p=>p.Id==issue_id);
+         
+       List<Employee> list1 = new List<Employee>();  
+         list1 = _context.Set < Employee > ().ToList(); 
+       
+        var assignee_obj =list1.FirstOrDefault(x => x.EmployeeId==user_id);  
+        issueToUpdate.Assginee=assignee_obj;
+           _context.Update < Issue > (issueToUpdate);
+         _context.SaveChanges();
+    }
+
+     public void UpdateStatusOfIssue(int issue_id,Issue _status)
+    {
+        var issueToUpdate =_context.Issues.FirstOrDefault(p=>p.Id==issue_id);
+        issueToUpdate.Status=_status.Status;
+          _context.Update < Issue > (issueToUpdate);
+         _context.SaveChanges();
+    }
+
+    public List<Issue> SearchOnTitleAndDescription(string _title,string _description)
+    {
+          List<Issue> matchingIssues = _context.Issues
+        .Where(issue => issue.Title.Contains(_title) && issue.Description.Contains(_description))
+        .ToList();
+        return matchingIssues;
+    }
 }

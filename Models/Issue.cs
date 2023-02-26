@@ -59,5 +59,10 @@ public class Issue
             get;
             set;
         }
+
+        public List<Label>? Label{
+            get;
+            set;
+        }
  
     }

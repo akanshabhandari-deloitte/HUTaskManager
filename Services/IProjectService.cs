@@ -21,4 +21,10 @@ public interface IProjectService
         /// <param name="employeeModel"></param>
         /// <returns></returns>
         ResponseModel SaveProject(int id,Project projectModel);
-    }
+           public Project GetProjectDetailsById(int projectId);
+
+           public void UpdateProject(int id ,Project updatedProject);
+ public ResponseModel DeleteProject(int projectId);
+//  public Issue GetIssuesByProject(int id);
+   
+}
