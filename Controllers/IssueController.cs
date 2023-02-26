@@ -34,10 +34,10 @@ public class IssueController:ControllerBase{
 
       [HttpPost("SaveIssue/{id}")]
     //  [Authorize(Roles="admin")]
-    public IActionResult SaveIssue(int id,[FromQuery] int Reporter_id,[FromQuery] int Assignee_id,[FromBody] Issue issueModel) {
+    public IActionResult SaveIssue(int id,[FromQuery] int Reporter_id,[FromBody] Issue issueModel) {
         try {
             // Console.WriteLine("assignee-------------"+Assignee_id);
-            var model = _issueService.SaveIssue(id,Reporter_id,Assignee_id,issueModel);
+            var model = _issueService.SaveIssue(id,Reporter_id,issueModel);
             return Ok(model);
         } catch (Exception) {
             return BadRequest();
@@ -70,19 +70,15 @@ public class IssueController:ControllerBase{
     }
 
     [HttpPut("{id}")]
-public IActionResult UpdateIssue(int id, [FromBody] Issue updatedIssue,[FromQuery] int assignee_id)
+public IActionResult UpdateIssue(int id, [FromBody] Issue updatedIssue)
 {
     if (updatedIssue == null)
     {
         return BadRequest();
     }
-    
     try
-    { Console.WriteLine("-------------update1");
-            _issueService.UpdateIssue(id,updatedIssue,assignee_id);
-             Console.WriteLine("-------------update2");
-        
-       
+    { 
+            _issueService.UpdateIssue(id,updatedIssue);
     }
     catch (DbUpdateConcurrencyException)
     {
@@ -103,4 +99,110 @@ public IActionResult UpdateIssue(int id, [FromBody] Issue updatedIssue,[FromQuer
     {
         throw new NotImplementedException();
     }
+
+
+    [HttpGet]
+    [Route("[action]/id")]
+    public IActionResult GetIssuesByProject(int id) {
+        try {
+            var issuesbyproject = _issueService.GetIssuesByProject( id);
+            if (issuesbyproject == null) return NotFound();
+            return Ok(issuesbyproject);
+        } catch (Exception) {
+            return BadRequest();
+        }
+    }
+
+
+    [HttpGet]
+    [Route("[action]/project_id/issue_id")]
+    public IActionResult GetDetailsOfIssuesInProject(int project_id,int issue_id) {
+        try {
+            var issuesbyproject = _issueService.GetDetailsOfIssuesInProject(project_id,issue_id);
+            if (issuesbyproject == null) return NotFound();
+            return Ok(issuesbyproject);
+        } catch (Exception) {
+            return BadRequest();
+        }
+    }
+
+       [HttpDelete]
+    [Route("[action]/project_id/issue_id")]
+    //  [Authorize(Roles="admin")]
+    public IActionResult DeleteIssueUnderAProject(int projectid,int issue_id) {
+        try {
+            var model = _issueService.DeleteIssueUnderAProject(projectid,issue_id);
+            return Ok(model);
+        } catch (Exception) {
+            return BadRequest();
+        }
+    }
+
+     [HttpPut]
+     [Route("[action]/project_id/issue_id")]
+public IActionResult UpdateIssueUnderAProject(int project_id,int issue_id, [FromBody] Issue updatedIssue)
+{
+    if (updatedIssue == null)
+    {
+        return BadRequest();
+    }
+    try
+    { 
+            _issueService.UpdateIssueUnderAProject(project_id,issue_id,updatedIssue);
+    }
+    catch (DbUpdateConcurrencyException)
+    {
+        if (!IssueExists(project_id))
+        {
+            return NotFound();
+        }
+        else
+        {
+            throw;
+        }
+    }
+
+    return NoContent();
+}
+
+
+[HttpPut]
+[Route("[action]/user_id/issue_id")]
+  public IActionResult AssigneIssueToUser(int issue_id,int user_id)
+  {
+ try {
+            _issueService.AssigneIssueToUser(issue_id,user_id);
+            return Ok();
+        } catch (Exception) {
+            return BadRequest();
+        }
+  }
+
+
+[HttpPut]
+[Route("[action]/issue_id")]
+  public IActionResult UpdateStatusOfIssue(int issue_id,[FromBody] Issue status)
+  {
+ try {
+            _issueService.UpdateStatusOfIssue(issue_id,status);
+            return Ok();
+        } catch (Exception) {
+            return BadRequest();
+        }
+  }
+
+   [HttpGet]
+    [Route("[action]")]
+   public IActionResult SearchOnTitleAndDescription([FromQuery] string _title,[FromQuery] string _description)
+   {
+    try{
+      var issue= _issueService.SearchOnTitleAndDescription(_title,_description);
+       return Ok(issue);
+    }
+    catch(Exception){
+        return BadRequest();
+    }
+   }
+
+
 }
