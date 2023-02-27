@@ -13,7 +13,7 @@ public class IssueService:IIssueService
     {
           List < Issue > list1;
         try {
-            list1= _context.Issues.Include(s=>s.Project).ToList();
+            list1= _context.Issues.Include(p=>p.Project).Include(p=>p.Assginee).Include(p=>p.Reporter).ToList();
             // list = _context.Set < Issue > ().ToList();
             Console.WriteLine(list1);
         } catch (Exception) {
@@ -26,9 +26,6 @@ public class IssueService:IIssueService
     public ResponseModel SaveIssue(int id,int reporter_id,Issue issueModel)
     {
          ResponseModel model = new ResponseModel();
-        //   Console.Write("------------------------"+issueModel.Type);
-        //         Console.Write("hi"+"-----"+id+"------"+issueModel.Description);
-                //  Console.Write("--assigne----------------------"+assignee_id);
 
       Issue _issue=new Issue();
       _issue.Description=issueModel.Description;
@@ -36,11 +33,6 @@ public class IssueService:IIssueService
       _issue.Type=issueModel.Type;
       _issue.Status=issueModel.Status;
       _issue.Created_At=DateTime.Now;
-         
-
-         
-
-
                List<Project> list = new List<Project>();  
          list = _context.Set < Project > ().ToList(); 
         //   Console.WriteLine("hibye");
@@ -125,7 +117,7 @@ public List<Issue> GetIssuesByProject(int id)
           IEnumerable<Issue> list=new List<Issue>();
           
 
-        list=_context.Issues.Where(p=>p.Project.Id==id);
+        list=_context.Issues.Include(p=>p.Project).Include(p=>p.Assginee).Include(p=>p.Reporter).Where(p=>p.Project.Id==id);
          Console.WriteLine("---------"+list.ToList());
         return list.ToList();
     }
@@ -136,7 +128,7 @@ public List<Issue> GetIssuesByProject(int id)
         // IEnumerable<Issue> list=new List<Issue>();
           
 
-        list= _context.Issues.Where(p=>p.Project.Id==project_id && p.Id==issue_id);
+        list= _context.Issues.Include(p=>p.Project).Include(p=>p.Assginee).Include(p=>p.Reporter).Where(p=>p.Project.Id==project_id && p.Id==issue_id);
         //  Console.WriteLine("---------"+list.ToList());
         return list.ToList();
     }
@@ -144,7 +136,7 @@ public List<Issue> GetIssuesByProject(int id)
 
      public bool DeleteIssueUnderAProject(int projectId,int issueId)
     {
-        var issue =_context.Issues.FirstOrDefault(p=>p.Project.Id==projectId && p.Id==issueId);
+        var issue =_context.Issues.Include(p=>p.Project).Include(p=>p.Assginee).Include(p=>p.Reporter).FirstOrDefault(p=>p.Project.Id==projectId && p.Id==issueId);
 
         if (issue == null)
         {
@@ -159,8 +151,8 @@ public List<Issue> GetIssuesByProject(int id)
 
     public void UpdateIssueUnderAProject(int project_id, int issue_id, Issue updatedIssue)
     {
-    var issueToUpdate =_context.Issues.FirstOrDefault(p=>p.Project.Id==project_id && p.Id==issue_id);
-    Console.WriteLine(issueToUpdate+"--------updatedIssue service"+issueToUpdate.Description+updatedIssue.Description);
+    var issueToUpdate =_context.Issues.Include(p=>p.Project).Include(p=>p.Assginee).Include(p=>p.Reporter).FirstOrDefault(p=>p.Project.Id==project_id && p.Id==issue_id);
+    // Console.WriteLine(issueToUpdate+"--------updatedIssue service"+issueToUpdate.Description+updatedIssue.Description);
     if(issueToUpdate!=null)
     {
         issueToUpdate.Title = updatedIssue.Title;
@@ -174,7 +166,7 @@ public List<Issue> GetIssuesByProject(int id)
 
     public void AssigneIssueToUser(int issue_id,int user_id)
     {
-         var issueToUpdate =_context.Issues.FirstOrDefault(p=>p.Id==issue_id);
+         var issueToUpdate =_context.Issues.Include(p=>p.Project).Include(p=>p.Assginee).Include(p=>p.Reporter).FirstOrDefault(p=>p.Id==issue_id);
          
        List<Employee> list1 = new List<Employee>();  
          list1 = _context.Set < Employee > ().ToList(); 
@@ -187,7 +179,7 @@ public List<Issue> GetIssuesByProject(int id)
 
      public void UpdateStatusOfIssue(int issue_id,Issue _status)
     {
-        var issueToUpdate =_context.Issues.FirstOrDefault(p=>p.Id==issue_id);
+        var issueToUpdate =_context.Issues.Include(p=>p.Project).Include(p=>p.Assginee).Include(p=>p.Reporter).FirstOrDefault(p=>p.Id==issue_id);
         issueToUpdate.Status=_status.Status;
           _context.Update < Issue > (issueToUpdate);
          _context.SaveChanges();
@@ -195,7 +187,7 @@ public List<Issue> GetIssuesByProject(int id)
 
     public List<Issue> SearchOnTitleAndDescription(string _title,string _description)
     {
-          List<Issue> matchingIssues = _context.Issues
+          List<Issue> matchingIssues = _context.Issues.Include(p=>p.Project).Include(p=>p.Assginee).Include(p=>p.Reporter)
         .Where(issue => issue.Title.Contains(_title) && issue.Description.Contains(_description))
         .ToList();
         return matchingIssues;
@@ -207,7 +199,7 @@ public List<Issue> GetIssuesByProject(int id)
        {
             List<Issue> list=new List<Issue>();
             Console.Write("--------"+project+" "+ email);
-             list=_context.Issues.Where(p=>p.Project.Id==project || p.Assginee.Email.Contains(email)).ToList();
+             list=_context.Issues.Include(p=>p.Project).Include(p=>p.Assginee).Include(p=>p.Reporter).Where(p=>p.Project.Id==project || p.Assginee.Email.Contains(email)).ToList();
         //    Console.Write("--------"+li);
             return list;
        }
@@ -216,7 +208,7 @@ public List<Issue> GetIssuesByProject(int id)
        {
             List<Issue> list=new List<Issue>();
             Console.Write("--------"+project+" "+ email);
-             list=_context.Issues.Where(p=>p.Project.Id==project && p.Assginee.Email.Contains(email)).ToList();
+             list=_context.Issues.Include(p=>p.Project).Include(p=>p.Assginee).Include(p=>p.Reporter).Where(p=>p.Project.Id==project && p.Assginee.Email.Contains(email)).ToList();
         //    Console.Write("--------"+li);
             return list;
        }
@@ -226,7 +218,7 @@ public List<Issue> GetIssuesByProject(int id)
     {
             List<Issue> list=new List<Issue>();
             try{
-                list=_context.Issues.Where(p=>p.Type==type).ToList();
+                list=_context.Issues.Include(p=>p.Project).Include(p=>p.Assginee).Include(p=>p.Reporter).Where(p=>p.Type==type).ToList();
                 Console.Write("--------"+list);
             }
               catch(Exception e)
@@ -241,7 +233,7 @@ public List<Issue> GetIssuesByProject(int id)
     {
             List<Issue> list=new List<Issue>();
             try{
-                list=_context.Issues.Where(p=>p.Type!=type).ToList();
+                list=_context.Issues.Include(p=>p.Project).Include(p=>p.Assginee).Include(p=>p.Reporter).Where(p=>p.Type!=type).ToList();
                 Console.Write("--------"+list);
             }
               catch(Exception e)
@@ -255,7 +247,7 @@ public List<Issue> GetIssuesByProject(int id)
     {
             List<Issue> list=new List<Issue>();
             try{
-                list=_context.Issues.Where(p=>p.Created_At>=date).ToList();
+                list=_context.Issues.Include(p=>p.Project).Include(p=>p.Assginee).Include(p=>p.Reporter).Where(p=>p.Created_At>=date).ToList();
                 Console.Write("--------"+list);
             }
               catch(Exception e)
@@ -269,7 +261,7 @@ public List<Issue> GetIssuesByProject(int id)
     {
             List<Issue> list=new List<Issue>();
             try{
-                list=_context.Issues.Where(p=>p.Created_At<=date).ToList();
+                list=_context.Issues.Include(p=>p.Project).Include(p=>p.Assginee).Include(p=>p.Reporter).Where(p=>p.Created_At<=date).ToList();
                 Console.Write("--------"+list);
             }
               catch(Exception e)

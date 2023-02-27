@@ -11,6 +11,7 @@ namespace TaskManagerApi.Controllers;
 
     [ApiController]
     [Route("api/[controller]")]
+    
     public class LoginController : Controller
     {
         private IConfiguration _config;  

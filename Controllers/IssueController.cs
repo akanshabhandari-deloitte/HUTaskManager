@@ -9,7 +9,7 @@ namespace TaskManagerApi.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-// [Authorize(AuthenticationSchemes = Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme)] 
+[Authorize(AuthenticationSchemes = Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme)] 
 public class IssueController:ControllerBase{
     IIssueService _issueService;
     public IssueController(IIssueService service) {
@@ -21,7 +21,7 @@ public class IssueController:ControllerBase{
     /// </summary>
     /// <returns></returns>
     [HttpGet("issue")]
-    // [Authorize(Roles="admin")]
+    [Authorize(Roles="admin,manager")]
     public IActionResult GetAllIssues() {
         try {
             var employees = _issueService.GetIssueList();
@@ -33,7 +33,7 @@ public class IssueController:ControllerBase{
     }
 
       [HttpPost("SaveIssue/{id}")]
-    //  [Authorize(Roles="admin")]
+    [Authorize(Roles="admin,manager")]
     public IActionResult SaveIssue(int id,[FromQuery] int Reporter_id,[FromBody] Issue issueModel) {
         try {
             // Console.WriteLine("assignee-------------"+Assignee_id);
@@ -46,7 +46,7 @@ public class IssueController:ControllerBase{
 
      [HttpGet]
     [Route("[action]/id")]
-    //   [Authorize(Roles="user")]
+    [Authorize(Roles="admin,manager,user")]
     public IActionResult GetIssueById(int id) {
         try {
             var issues = _issueService.GetIssueDetailsById(id);
@@ -58,7 +58,7 @@ public class IssueController:ControllerBase{
     }
 
       [HttpDelete]
-    [Route("[action]")]
+   [Authorize(Roles="admin,manager")]
     //  [Authorize(Roles="admin")]
     public IActionResult DeleteIssue(int id) {
         try {
@@ -70,6 +70,7 @@ public class IssueController:ControllerBase{
     }
 
     [HttpPut("{id}")]
+    [Authorize(Roles="admin,manager")]
 public IActionResult UpdateIssue(int id, [FromBody] Issue updatedIssue)
 {
     if (updatedIssue == null)
@@ -103,6 +104,7 @@ public IActionResult UpdateIssue(int id, [FromBody] Issue updatedIssue)
 
     [HttpGet]
     [Route("[action]/id")]
+    [Authorize(Roles="admin,manager")]
     public IActionResult GetIssuesByProject(int id) {
         try {
             var issuesbyproject = _issueService.GetIssuesByProject( id);
@@ -116,6 +118,7 @@ public IActionResult UpdateIssue(int id, [FromBody] Issue updatedIssue)
 
     [HttpGet]
     [Route("[action]/project_id/issue_id")]
+    [Authorize(Roles="admin,manager,user")]
     public IActionResult GetDetailsOfIssuesInProject(int project_id,int issue_id) {
         try {
             var issuesbyproject = _issueService.GetDetailsOfIssuesInProject(project_id,issue_id);
@@ -128,7 +131,7 @@ public IActionResult UpdateIssue(int id, [FromBody] Issue updatedIssue)
 
        [HttpDelete]
     [Route("[action]/project_id/issue_id")]
-    //  [Authorize(Roles="admin")]
+    [Authorize(Roles="admin,manager")]
     public IActionResult DeleteIssueUnderAProject(int projectid,int issue_id) {
         try {
             var model = _issueService.DeleteIssueUnderAProject(projectid,issue_id);
@@ -140,6 +143,7 @@ public IActionResult UpdateIssue(int id, [FromBody] Issue updatedIssue)
 
      [HttpPut]
      [Route("[action]/project_id/issue_id")]
+     [Authorize(Roles="admin,manager")]
 public IActionResult UpdateIssueUnderAProject(int project_id,int issue_id, [FromBody] Issue updatedIssue)
 {
     if (updatedIssue == null)
@@ -168,6 +172,7 @@ public IActionResult UpdateIssueUnderAProject(int project_id,int issue_id, [From
 
 [HttpPut]
 [Route("[action]/user_id/issue_id")]
+[Authorize(Roles="admin,manager")]
   public IActionResult AssigneIssueToUser(int issue_id,int user_id)
   {
  try {
@@ -181,6 +186,7 @@ public IActionResult UpdateIssueUnderAProject(int project_id,int issue_id, [From
 
 [HttpPut]
 [Route("[action]/issue_id")]
+[Authorize(Roles="admin,manager,user")]
   public IActionResult UpdateStatusOfIssue(int issue_id,[FromBody] Issue status)
   {
  try {
@@ -193,6 +199,7 @@ public IActionResult UpdateIssueUnderAProject(int project_id,int issue_id, [From
 
    [HttpGet]
     [Route("[action]")]
+    [Authorize(Roles="admin,manager,user")]
    public IActionResult SearchOnTitleAndDescription([FromQuery] string _title,[FromQuery] string _description)
    {
     try{
@@ -206,7 +213,8 @@ public IActionResult UpdateIssueUnderAProject(int project_id,int issue_id, [From
 
 
  [HttpGet]
-    [Route("[action]")]
+[Route("[action]")]
+[Authorize(Roles="admin,manager")]
    public IActionResult SerachQueryProject_OR_IDAssigneeEmail([FromQuery] int projectId,[FromQuery] string Email)
    {
     try{
@@ -220,6 +228,7 @@ public IActionResult UpdateIssueUnderAProject(int project_id,int issue_id, [From
 
    [HttpGet]
     [Route("[action]")]
+    [Authorize(Roles="admin,manager")]
    public IActionResult SerachQueryProject_AND_IDAssigneeEmail([FromQuery] int projectId,[FromQuery] string Email)
    {
     try{
@@ -235,6 +244,7 @@ public IActionResult UpdateIssueUnderAProject(int project_id,int issue_id, [From
  
     [HttpGet]
     [Route("[action]")]
+    [Authorize(Roles="admin,manager")]
       public IActionResult  SerachByType([FromQuery] Models.Issue.IssueType type)
       { try{
       var issue= _issueService.SerachByType(type);
@@ -247,9 +257,10 @@ public IActionResult UpdateIssueUnderAProject(int project_id,int issue_id, [From
       }
 
 
-      [HttpGet]
+    [HttpGet]
     [Route("[action]")]
-      public IActionResult  SerachByNotAGivenType([FromQuery] Models.Issue.IssueType type)
+    [Authorize(Roles="admin,manager")]
+    public IActionResult  SerachByNotAGivenType([FromQuery] Models.Issue.IssueType type)
       { try{
       var issue= _issueService.SerachByNotAGivenType(type);
        return Ok(issue);
@@ -260,9 +271,10 @@ public IActionResult UpdateIssueUnderAProject(int project_id,int issue_id, [From
 
       }
 
-     [HttpGet]
+    [HttpGet]
     [Route("[action]")]
-       public ActionResult SearchByCreatedDate([FromQuery] DateTime date)
+    [Authorize(Roles="admin,manager")]
+    public ActionResult SearchByCreatedDate([FromQuery] DateTime date)
        {
         try{
       var issue= _issueService.SearchByCreatedDate(date);
@@ -273,8 +285,9 @@ public IActionResult UpdateIssueUnderAProject(int project_id,int issue_id, [From
     }
        }
 
-   [HttpGet]
+    [HttpGet]
     [Route("[action]")]
+    [Authorize(Roles="admin,manager")]
        public ActionResult SearchByUpdatedDate([FromQuery] DateTime date)
        {
         try{

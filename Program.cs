@@ -6,9 +6,14 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Microsoft.Extensions.Logging;
+using NLog;
+using NLog.Web;
 
+var logger=NLog.LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
+try{
 var builder = WebApplication.CreateBuilder(args);
-
+//    private static readonly ILog _log = LogManager.GetLogger();
 // Add services to the container.
 var connectionString = builder.Configuration["ConnectionString:TaskManagerDB"];//connection string from appsetting.json
 builder.Services.AddDbContext<TaskManagerContext>(opts =>
@@ -20,6 +25,9 @@ builder.Services.AddScoped<ILabelService, LabelService>();
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
+
+
+ 
 builder.Services.AddSwaggerGen(swagger =>  
 {  
     //This is to generate the Default UI of Swagger Documentation  
@@ -90,3 +98,9 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+}
+catch(Exception e)
+{
+    logger.Error(e);
+}
+

@@ -9,7 +9,7 @@ namespace TaskManagerApi.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-// [Authorize(AuthenticationSchemes = Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme)] 
+[Authorize(AuthenticationSchemes = Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme)] 
 public class LabelController:ControllerBase{
     ILabelService _labelService;
     public LabelController(ILabelService service) {
@@ -18,9 +18,9 @@ public class LabelController:ControllerBase{
 
 
 
-     [HttpGet("deletelabel/{label_id}/issue/{issue_id}")]
+     [HttpDelete("deletelabel/{label_id}/issue/{issue_id}")]
     
-    //  [Authorize(Roles="admin")]
+     [Authorize(Roles="admin,manager,user")]
     public IActionResult DeleteLabelFromIssue(int label_id,int issue_id) {
         try {
             var model = _labelService.DeleteLabelFromIssue(label_id,issue_id);
@@ -33,7 +33,7 @@ public class LabelController:ControllerBase{
 
     [HttpPost]
     [Route("[action]")]
-    //  [Authorize(Roles="admin")]
+     [Authorize(Roles="admin")]
     public IActionResult SaveLabel(Label labelModel) {
         try {
             var model = _labelService.SaveLabel(labelModel);
@@ -45,7 +45,7 @@ public class LabelController:ControllerBase{
 
     [HttpDelete]
     [Route("[action]")]
-    //  [Authorize(Roles="admin")]
+     [Authorize(Roles="admin")]
     public IActionResult DeleteLabel(int id) {
         try {
             var model = _labelService.DeleteLabel(id);
@@ -55,7 +55,7 @@ public class LabelController:ControllerBase{
         }
     }
      [HttpGet]
-    // [Authorize(Roles="admin")]
+    [Authorize(Roles="admin")]
     public IActionResult GetAllLabels() {
         try {
             var employees = _labelService.GetLabelList();
@@ -68,6 +68,7 @@ public class LabelController:ControllerBase{
     }
 
     [HttpPut("{id}")]
+     [Authorize(Roles="admin")]
     public IActionResult UpdateLabel(int id, [FromBody] Label updatedLabel)
       {
     if (updatedLabel == null)
@@ -85,7 +86,8 @@ public class LabelController:ControllerBase{
     }
      }
 
-        [HttpPut("Addlabel/{label_id}/to/issue/{issue_id}")]
+    [HttpPut("Addlabel/{label_id}/to/issue/{issue_id}")]
+    [Authorize(Roles="admin,manager,user")]
     public IActionResult AddLabelToIssue(int label_id,int issue_id)
       {
     try

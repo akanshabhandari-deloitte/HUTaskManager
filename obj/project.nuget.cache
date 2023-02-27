@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "xQ/BDG7NZe11ytE+FMtpJtgYhb/+R1t/zsZteKpJ+CjIjBJJofCq+H8aGwj+9wbWBiuLMhNHBK33A95CBKxX4Q==",
+  "dgSpecHash": "UQuUXQc1uKyMKV4tCxE4JieBRCRKFj/7uWUiP93SPBvmzNATrqPi28sH1ks0WrBzcDU4sOWyUt6B5aS3bgrSWw==",
   "success": true,
   "projectFilePath": "/home/akabhandari/Downloads/TaskManagerHU/HUTaskManager/CourseApi.csproj",
   "expectedPackageFiles": [
@@ -44,6 +44,10 @@
     "/home/akabhandari/.nuget/packages/mysqlconnector/2.0.0/mysqlconnector.2.0.0.nupkg.sha512",
     "/home/akabhandari/.nuget/packages/netstandard.library/2.0.0/netstandard.library.2.0.0.nupkg.sha512",
     "/home/akabhandari/.nuget/packages/newtonsoft.json/10.0.1/newtonsoft.json.10.0.1.nupkg.sha512",
+    "/home/akabhandari/.nuget/packages/nlog/5.1.2/nlog.5.1.2.nupkg.sha512",
+    "/home/akabhandari/.nuget/packages/nlog.database/5.1.2/nlog.database.5.1.2.nupkg.sha512",
+    "/home/akabhandari/.nuget/packages/nlog.extensions.logging/5.2.2/nlog.extensions.logging.5.2.2.nupkg.sha512",
+    "/home/akabhandari/.nuget/packages/nlog.web.aspnetcore/5.2.2/nlog.web.aspnetcore.5.2.2.nupkg.sha512",
     "/home/akabhandari/.nuget/packages/pomelo.entityframeworkcore.mysql/6.0.0/pomelo.entityframeworkcore.mysql.6.0.0.nupkg.sha512",
     "/home/akabhandari/.nuget/packages/pomelo.entityframeworkcore.mysql.design/1.1.0/pomelo.entityframeworkcore.mysql.design.1.1.0.nupkg.sha512",
     "/home/akabhandari/.nuget/packages/swashbuckle.aspnetcore/6.2.3/swashbuckle.aspnetcore.6.2.3.nupkg.sha512",
