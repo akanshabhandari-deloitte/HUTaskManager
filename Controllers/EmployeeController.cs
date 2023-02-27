@@ -8,7 +8,7 @@ namespace TaskManagerApi.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-// [Authorize(AuthenticationSchemes = Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme)] 
+[Authorize(AuthenticationSchemes = Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme)] 
 public class EmployeeController:ControllerBase{
     IEmployeeService _employeeService;
     public EmployeeController(IEmployeeService service) {
@@ -20,7 +20,7 @@ public class EmployeeController:ControllerBase{
     /// </summary>
     /// <returns></returns>
     [HttpGet("emp")]
-    // [Authorize(Roles="admin")]
+    [Authorize(Roles="admin")]
     public IActionResult GetAllEmployees() {
         try {
             var employees = _employeeService.GetEmployeesList();
@@ -38,7 +38,7 @@ public class EmployeeController:ControllerBase{
     /// <returns></returns>
     [HttpGet]
     [Route("[action]/id")]
-    //   [Authorize(Roles="user")]
+      [Authorize(Roles="admin")]
     public IActionResult GetEmployeesById(int id) {
         try {
             var employees = _employeeService.GetEmployeeDetailsById(id);
@@ -56,7 +56,7 @@ public class EmployeeController:ControllerBase{
     /// <returns></returns>
     [HttpPost]
     [Route("[action]")]
-    //  [Authorize(Roles="admin")]
+     [Authorize(Roles="admin")]
     public IActionResult SaveEmployees(Employee employeeModel) {
         try {
             var model = _employeeService.SaveEmployee(employeeModel);
@@ -73,7 +73,7 @@ public class EmployeeController:ControllerBase{
     /// <returns></returns>
     [HttpDelete]
     [Route("[action]")]
-    //  [Authorize(Roles="admin")]
+     [Authorize(Roles="admin")]
     public IActionResult DeleteEmployee(int id) {
         try {
             var model = _employeeService.DeleteEmployee(id);

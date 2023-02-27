@@ -17,5 +17,7 @@
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.26.1"/>
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.0"/>
     <PackageReference Include="log4net" Version="*"/>
+    <PackageReference Include="NLog.Web.AspNetCore" Version="*"/>
+    <PackageReference Include="NLog.Database" Version="*"/>
   </ItemGroup>
 </Project>
