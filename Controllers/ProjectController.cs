@@ -14,8 +14,9 @@ namespace TaskManagerApi.Controllers;
 public class ProjectController:ControllerBase{
     IProjectService _projectService;
     private TaskManagerContext _db;
+    
     private readonly ILogger<Project> _logger;
-    private static readonly ILog _log = LogManager.GetLogger(typeof(Project));
+
     
     public ProjectController(IProjectService service,TaskManagerContext db,ILogger<Project> logger) {
         _projectService = service;
@@ -34,40 +35,24 @@ public class ProjectController:ControllerBase{
     public IActionResult GetAllProject() {
         try {
             var employees = _projectService.GetProjectList();
-            _log.InfoFormat("-------Getting Project List");
+            _logger.LogInformation("Get All Project List");
             if (employees == null) return NotFound();
 
             return Ok(employees);
         } catch (Exception) {
+              _logger.LogError("Some Error List");
             return BadRequest();
         }
     }
-
-    
-    /// <summary>
-    /// save employee
-    /// </summary>
-    /// <param name="employeeModel"></param>
-    /// <returns></returns>
     [HttpPost("SaveProject/{id}")]
-    // [Route("[action]")]
      [Authorize(Roles="admin")]
     public IActionResult SaveProject(int id,[FromBody] Project project) {  
         try {
-        //  Console.WriteLine("save");
-        //  List<Employee> list = new List<Employee>();  
-        //  list = _db.Set < Employee > ().ToList(); 
-        // var obj =list.FirstOrDefault(x => x.EmployeeId==id);  
-        //  if (obj == null)
-        // {
-        //     return NotFound();
-        
-        // } 
-        var model = _projectService.SaveProject(id,project);
-          
-        
+        var model = _projectService.SaveProject(id,project); 
+          _logger.LogInformation("Save All Project List");
         return Ok(model);
         } catch (Exception) {
+               _logger.LogError("Some Error List");
             return BadRequest();
         }
     }
@@ -79,9 +64,15 @@ public class ProjectController:ControllerBase{
     public IActionResult GetProjectsById(int id) {
         try {
             var employees = _projectService.GetProjectDetailsById(id);
-            if (employees == null) return NotFound();
+              _logger.LogInformation("Get  Project By Id");
+            if (employees == null)
+            {
+                 _logger.LogInformation("Project Not Found");
+                 return NotFound();
+            } 
             return Ok(employees);
         } catch (Exception) {
+             _logger.LogError("DeleteProject By Id");
             return BadRequest();
         }
     }
@@ -124,9 +115,12 @@ public class ProjectController:ControllerBase{
      [Authorize(Roles="admin")]
     public IActionResult DeleteProject(int id) {
         try {
+
             var model = _projectService.DeleteProject(id);
+             _logger.LogInformation("Delete Project By ID");
             return Ok(model);
         } catch (Exception) {
+             _logger.LogError("Delete Project By Id");
             return BadRequest();
         }
     }

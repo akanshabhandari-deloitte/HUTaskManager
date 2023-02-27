@@ -23,11 +23,11 @@ builder.Services.AddScoped<IProjectService, ProjectService>();
 builder.Services.AddScoped<IIssueService, IssueService>();
 builder.Services.AddScoped<ILabelService, LabelService>();
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddLogging(builder =>
+{
+    builder.AddConsole();
+});
 builder.Services.AddEndpointsApiExplorer();
-
-
- 
 builder.Services.AddSwaggerGen(swagger =>  
 {  
     //This is to generate the Default UI of Swagger Documentation  
