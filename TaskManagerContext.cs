@@ -11,9 +11,14 @@ public class TaskManagerContext : DbContext
          public DbSet<Project>? Projects { get; set; }
           public DbSet<Issue>? Issues { get; set; }
 
+          public DbSet<Label>? Labels{get; set;}
         public TaskManagerContext(DbContextOptions options):base(options)
         {
             
         }
 
+    internal void Remove<T>(Label temp)
+    {
+        throw new NotImplementedException();
     }
+}

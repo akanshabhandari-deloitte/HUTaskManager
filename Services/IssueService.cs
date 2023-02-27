@@ -35,6 +35,7 @@ public class IssueService:IIssueService
       _issue.Title=issueModel.Title;
       _issue.Type=issueModel.Type;
       _issue.Status=issueModel.Status;
+      _issue.Created_At=DateTime.Now;
          
 
          
@@ -104,20 +105,20 @@ public class IssueService:IIssueService
 
 public void UpdateIssue(int id,Issue updatedIssue)
 {
-    Console.WriteLine("--------updatedIssue 1 service");
+    // Console.WriteLine("--------updatedIssue 1 service");
     var issueToUpdate = _context.Find < Issue > (id);
-    Console.WriteLine(issueToUpdate+"--------updatedIssue service"+issueToUpdate.Description+updatedIssue.Description);
+    // Console.WriteLine(issueToUpdate+"--------updatedIssue service"+issueToUpdate.Description+updatedIssue.Description);
     if(issueToUpdate!=null)
     {
         issueToUpdate.Title = updatedIssue.Title;
         issueToUpdate.Description = updatedIssue.Description;
         issueToUpdate.Status = updatedIssue.Status;
         issueToUpdate.Type = updatedIssue.Type;
+        issueToUpdate.Updated_At=DateTime.Now;
         _context.Update < Issue > (issueToUpdate);
          _context.SaveChanges();
     }
 }
-
 public List<Issue> GetIssuesByProject(int id)
     {
         Issue? issue=new Issue();
@@ -199,4 +200,94 @@ public List<Issue> GetIssuesByProject(int id)
         .ToList();
         return matchingIssues;
     }
+       
+       
+        //--------------------------  Search Query Language for Issues
+       public List<Issue>  SerachQueryProjectIDAssigneeEmailOR(int project,string email)
+       {
+            List<Issue> list=new List<Issue>();
+            Console.Write("--------"+project+" "+ email);
+             list=_context.Issues.Where(p=>p.Project.Id==project || p.Assginee.Email.Contains(email)).ToList();
+        //    Console.Write("--------"+li);
+            return list;
+       }
+
+         public List<Issue>  SerachQueryProjectIDAssigneeEmailAND(int project,string email)
+       {
+            List<Issue> list=new List<Issue>();
+            Console.Write("--------"+project+" "+ email);
+             list=_context.Issues.Where(p=>p.Project.Id==project && p.Assginee.Email.Contains(email)).ToList();
+        //    Console.Write("--------"+li);
+            return list;
+       }
+
+
+    public List<Issue> SerachByType(Models.Issue.IssueType type)
+    {
+            List<Issue> list=new List<Issue>();
+            try{
+                list=_context.Issues.Where(p=>p.Type==type).ToList();
+                Console.Write("--------"+list);
+            }
+              catch(Exception e)
+              {
+                    Console.Write("--------"+e);
+              }
+            return list;
+    }
+
+
+     public List<Issue> SerachByNotAGivenType(Models.Issue.IssueType type)
+    {
+            List<Issue> list=new List<Issue>();
+            try{
+                list=_context.Issues.Where(p=>p.Type!=type).ToList();
+                Console.Write("--------"+list);
+            }
+              catch(Exception e)
+              {
+                    Console.Write("--------"+e);
+              }
+            return list;
+    }
+
+        public List<Issue> SearchByCreatedDate(DateTime date)
+    {
+            List<Issue> list=new List<Issue>();
+            try{
+                list=_context.Issues.Where(p=>p.Created_At>=date).ToList();
+                Console.Write("--------"+list);
+            }
+              catch(Exception e)
+              {
+                    Console.Write("--------"+e);
+              }
+            return list;
+    }
+
+     public List<Issue> SearchByUpdatedDate(DateTime date)
+    {
+            List<Issue> list=new List<Issue>();
+            try{
+                list=_context.Issues.Where(p=>p.Created_At<=date).ToList();
+                Console.Write("--------"+list);
+            }
+              catch(Exception e)
+              {
+                    Console.Write("--------"+e);
+              }
+            return list;
+    }
+
+   
+            
+            
+         
+
+
+
+
+
+
+
 }

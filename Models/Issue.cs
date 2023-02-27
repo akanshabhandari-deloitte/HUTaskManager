@@ -60,7 +60,16 @@ public class Issue
             set;
         }
 
+        [JsonIgnore]
         public List<Label>? Label{
+            get;
+            set;
+        }
+        public DateTime Created_At{
+            get;
+            set;
+        }
+         public DateTime Updated_At{
             get;
             set;
         }

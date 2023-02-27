@@ -205,4 +205,86 @@ public IActionResult UpdateIssueUnderAProject(int project_id,int issue_id, [From
    }
 
 
+ [HttpGet]
+    [Route("[action]")]
+   public IActionResult SerachQueryProject_OR_IDAssigneeEmail([FromQuery] int projectId,[FromQuery] string Email)
+   {
+    try{
+      var issue= _issueService.SerachQueryProjectIDAssigneeEmailOR(projectId,Email);
+       return Ok(issue);
+    }
+    catch(Exception){
+        return BadRequest();
+    }
+   }
+
+   [HttpGet]
+    [Route("[action]")]
+   public IActionResult SerachQueryProject_AND_IDAssigneeEmail([FromQuery] int projectId,[FromQuery] string Email)
+   {
+    try{
+      var issue= _issueService.SerachQueryProjectIDAssigneeEmailAND(projectId,Email);
+       return Ok(issue);
+    }
+    catch(Exception){
+        return BadRequest();
+    }
+   }
+
+
+ 
+    [HttpGet]
+    [Route("[action]")]
+      public IActionResult  SerachByType([FromQuery] Models.Issue.IssueType type)
+      { try{
+      var issue= _issueService.SerachByType(type);
+       return Ok(issue);
+    }
+    catch(Exception){
+        return BadRequest();
+    }
+
+      }
+
+
+      [HttpGet]
+    [Route("[action]")]
+      public IActionResult  SerachByNotAGivenType([FromQuery] Models.Issue.IssueType type)
+      { try{
+      var issue= _issueService.SerachByNotAGivenType(type);
+       return Ok(issue);
+    }
+    catch(Exception){
+        return BadRequest();
+    }
+
+      }
+
+     [HttpGet]
+    [Route("[action]")]
+       public ActionResult SearchByCreatedDate([FromQuery] DateTime date)
+       {
+        try{
+      var issue= _issueService.SearchByCreatedDate(date);
+       return Ok(issue);
+    }
+    catch(Exception){
+        return BadRequest();
+    }
+       }
+
+   [HttpGet]
+    [Route("[action]")]
+       public ActionResult SearchByUpdatedDate([FromQuery] DateTime date)
+       {
+        try{
+      var issue= _issueService.SearchByUpdatedDate(date);
+       return Ok(issue);
+    }
+    catch(Exception){
+        return BadRequest();
+    }
+       }
+
+
 }

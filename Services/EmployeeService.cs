@@ -55,7 +55,7 @@ public class EmployeeService:IEmployeeService
     public ResponseModel SaveEmployee(Employee employeeModel)
     {
         ResponseModel model = new ResponseModel();
-      
+    
                 _context.Add < Employee > (employeeModel);
                 model.Messsage = "Employee Inserted Successfully";
            // }

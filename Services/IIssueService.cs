@@ -17,4 +17,13 @@ public interface IIssueService
       public void AssigneIssueToUser(int issue_id,int user_id);
        public void UpdateStatusOfIssue(int issue_id,Issue _status);
         public List<Issue> SearchOnTitleAndDescription(string _title,string _description);
+
+          public List<Issue>  SerachQueryProjectIDAssigneeEmailOR(int project,string email);
+
+          public List<Issue>  SerachQueryProjectIDAssigneeEmailAND(int project,string email);  
+                 public List<Issue>  SerachByType(Models.Issue.IssueType type);
+                  public List<Issue> SearchByCreatedDate(DateTime date);
+                   public List<Issue> SearchByUpdatedDate(DateTime date);
+
+                     public List<Issue> SerachByNotAGivenType(Models.Issue.IssueType type);
 }

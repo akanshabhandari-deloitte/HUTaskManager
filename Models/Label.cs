@@ -15,8 +15,8 @@ public class Label
             get;
             set;
         }
-
-        public Issue? issue{
+         [JsonIgnore]
+        public List<Issue>? issue{
             get;set;
         }
     }
