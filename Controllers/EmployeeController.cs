@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 using TaskManagerApi.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Console;
 
 namespace TaskManagerApi.Controllers;
 
@@ -11,74 +13,67 @@ namespace TaskManagerApi.Controllers;
 [Authorize(AuthenticationSchemes = Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme)] 
 public class EmployeeController:ControllerBase{
     IEmployeeService _employeeService;
-    public EmployeeController(IEmployeeService service) {
-        _employeeService = service;
-    }
+    private readonly ILogger<Employee> _logger;
 
-        /// <summary>
-    /// get all employess
-    /// </summary>
-    /// <returns></returns>
+    public EmployeeController(IEmployeeService service,ILogger<Employee> logger) {
+        _employeeService = service;
+        _logger=logger;
+    }
     [HttpGet("emp")]
     [Authorize(Roles="admin")]
     public IActionResult GetAllEmployees() {
         try {
+            _logger.LogInformation("List of emp");
             var employees = _employeeService.GetEmployeesList();
             if (employees == null) return NotFound();
             return Ok(employees);
         } catch (Exception) {
+            _logger.LogError("This is an error message.");
             return BadRequest();
         }
     }
-
-    /// <summary>
-    /// get employee details by id
-    /// </summary>
-    /// <param name="id"></param>
-    /// <returns></returns>
     [HttpGet]
     [Route("[action]/id")]
       [Authorize(Roles="admin")]
     public IActionResult GetEmployeesById(int id) {
         try {
             var employees = _employeeService.GetEmployeeDetailsById(id);
-            if (employees == null) return NotFound();
+                _logger.LogInformation("Get Emp by ID");
+            if (employees == null) 
+            {
+                _logger.LogError("Employee not found");
+                return NotFound();
+            }
             return Ok(employees);
         } catch (Exception) {
             return BadRequest();
         }
     }
-    
-    /// <summary>
-    /// save employee
-    /// </summary>
-    /// <param name="employeeModel"></param>
-    /// <returns></returns>
+  
     [HttpPost]
     [Route("[action]")]
      [Authorize(Roles="admin")]
     public IActionResult SaveEmployees(Employee employeeModel) {
         try {
             var model = _employeeService.SaveEmployee(employeeModel);
+              _logger.LogInformation("Save Employee");
             return Ok(model);
         } catch (Exception) {
+            _logger.LogError("Employee not Saved");
             return BadRequest();
         }
     }
 
-    /// <summary>
-    /// delete employee
-    /// </summary>
-    /// <param name="id"></param>
-    /// <returns></returns>
     [HttpDelete]
     [Route("[action]")]
      [Authorize(Roles="admin")]
     public IActionResult DeleteEmployee(int id) {
         try {
             var model = _employeeService.DeleteEmployee(id);
+              _logger.LogInformation("Save Employee");
             return Ok(model);
         } catch (Exception) {
+             _logger.LogError("Employee not Deleted");
             return BadRequest();
         }
     }

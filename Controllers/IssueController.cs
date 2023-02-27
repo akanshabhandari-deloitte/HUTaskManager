@@ -12,22 +12,26 @@ namespace TaskManagerApi.Controllers;
 [Authorize(AuthenticationSchemes = Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme)] 
 public class IssueController:ControllerBase{
     IIssueService _issueService;
-    public IssueController(IIssueService service) {
+    private readonly ILogger<Issue> _logger;
+
+    public IssueController(IIssueService service,ILogger<Issue> logger) {
         _issueService = service;
+        _logger=logger;
     }
 
-        /// <summary>
-    /// get all employess
-    /// </summary>
-    /// <returns></returns>
     [HttpGet("issue")]
     [Authorize(Roles="admin,manager")]
     public IActionResult GetAllIssues() {
         try {
             var employees = _issueService.GetIssueList();
-            if (employees == null) return NotFound();
+            _logger.LogInformation("Able to get Issue list");
+            if (employees == null){
+                 _logger.LogInformation("Issue is Empty Able to get Issue list");
+                 return NotFound();
+            } 
             return Ok(employees);
         } catch (Exception) {
+             _logger.LogError("Error  to get Issue list");
             return BadRequest();
         }
     }
@@ -36,10 +40,12 @@ public class IssueController:ControllerBase{
     [Authorize(Roles="admin,manager")]
     public IActionResult SaveIssue(int id,[FromQuery] int Reporter_id,[FromBody] Issue issueModel) {
         try {
-            // Console.WriteLine("assignee-------------"+Assignee_id);
+           
             var model = _issueService.SaveIssue(id,Reporter_id,issueModel);
+             _logger.LogInformation("Able to save Issue list");
             return Ok(model);
         } catch (Exception) {
+             _logger.LogError("Not Able to get Issue list");
             return BadRequest();
         }
     }
@@ -50,9 +56,16 @@ public class IssueController:ControllerBase{
     public IActionResult GetIssueById(int id) {
         try {
             var issues = _issueService.GetIssueDetailsById(id);
-            if (issues == null) return NotFound();
+             _logger.LogInformation("Able to get Issue by id");
+            if (issues == null) 
+            {
+                 _logger.LogError(" Issue Not found by id");
+                  return NotFound();
+            }
+           
             return Ok(issues);
         } catch (Exception) {
+           _logger.LogError(" Service not working");
             return BadRequest();
         }
     }
@@ -63,8 +76,10 @@ public class IssueController:ControllerBase{
     public IActionResult DeleteIssue(int id) {
         try {
             var model = _issueService.DeleteIssue(id);
+            _logger.LogInformation(" Delete successfull");
             return Ok(model);
         } catch (Exception) {
+            _logger.LogError(" Issue Not found by id for delete");
             return BadRequest();
         }
     }
@@ -75,22 +90,27 @@ public IActionResult UpdateIssue(int id, [FromBody] Issue updatedIssue)
 {
     if (updatedIssue == null)
     {
+        _logger.LogError(" Issue Not found by id");
         return BadRequest();
+
     }
     try
     { 
             _issueService.UpdateIssue(id,updatedIssue);
+            _logger.LogError(" Issue update successfull");
     }
     catch (DbUpdateConcurrencyException)
     {
         if (!IssueExists(id))
         {
+             _logger.LogError(" Issue Service error");
             return NotFound();
         }
         else
         {
             throw;
         }
+       
     }
 
     return NoContent();
@@ -108,9 +128,15 @@ public IActionResult UpdateIssue(int id, [FromBody] Issue updatedIssue)
     public IActionResult GetIssuesByProject(int id) {
         try {
             var issuesbyproject = _issueService.GetIssuesByProject( id);
-            if (issuesbyproject == null) return NotFound();
+             _logger.LogInformation(" Issue by project");
+            if (issuesbyproject == null) 
+            {
+                _logger.LogError("issue not found");
+                return NotFound();
+            }
             return Ok(issuesbyproject);
         } catch (Exception) {
+             _logger.LogError("issue service error");
             return BadRequest();
         }
     }
@@ -122,9 +148,15 @@ public IActionResult UpdateIssue(int id, [FromBody] Issue updatedIssue)
     public IActionResult GetDetailsOfIssuesInProject(int project_id,int issue_id) {
         try {
             var issuesbyproject = _issueService.GetDetailsOfIssuesInProject(project_id,issue_id);
-            if (issuesbyproject == null) return NotFound();
+             _logger.LogInformation(" details of Issue by project");
+            if (issuesbyproject == null)
+            {
+                 _logger.LogError("issue not found");
+                 return NotFound();
+            } 
             return Ok(issuesbyproject);
         } catch (Exception) {
+              _logger.LogError("issue service error");
             return BadRequest();
         }
     }
@@ -135,8 +167,10 @@ public IActionResult UpdateIssue(int id, [FromBody] Issue updatedIssue)
     public IActionResult DeleteIssueUnderAProject(int projectid,int issue_id) {
         try {
             var model = _issueService.DeleteIssueUnderAProject(projectid,issue_id);
+               _logger.LogInformation(" delete  Issue under a project");
             return Ok(model);
         } catch (Exception) {
+              _logger.LogError("issue service error");
             return BadRequest();
         }
     }
@@ -153,11 +187,13 @@ public IActionResult UpdateIssueUnderAProject(int project_id,int issue_id, [From
     try
     { 
             _issueService.UpdateIssueUnderAProject(project_id,issue_id,updatedIssue);
+              _logger.LogInformation("update issue under a project");
     }
     catch (DbUpdateConcurrencyException)
     {
         if (!IssueExists(project_id))
         {
+              _logger.LogError("issue service error");
             return NotFound();
         }
         else
@@ -177,8 +213,10 @@ public IActionResult UpdateIssueUnderAProject(int project_id,int issue_id, [From
   {
  try {
             _issueService.AssigneIssueToUser(issue_id,user_id);
+            _logger.LogInformation("assign issue to user");
             return Ok();
         } catch (Exception) {
+              _logger.LogError("issue service error");
             return BadRequest();
         }
   }
@@ -191,8 +229,10 @@ public IActionResult UpdateIssueUnderAProject(int project_id,int issue_id, [From
   {
  try {
             _issueService.UpdateStatusOfIssue(issue_id,status);
+              _logger.LogInformation("update status of issue");
             return Ok();
         } catch (Exception) {
+              _logger.LogError("Issue Service Error");
             return BadRequest();
         }
   }
@@ -204,9 +244,11 @@ public IActionResult UpdateIssueUnderAProject(int project_id,int issue_id, [From
    {
     try{
       var issue= _issueService.SearchOnTitleAndDescription(_title,_description);
+         _logger.LogInformation(" Search On Title And Description");
        return Ok(issue);
     }
     catch(Exception){
+          _logger.LogError("Issue Service Error");
         return BadRequest();
     }
    }
@@ -219,9 +261,11 @@ public IActionResult UpdateIssueUnderAProject(int project_id,int issue_id, [From
    {
     try{
       var issue= _issueService.SerachQueryProjectIDAssigneeEmailOR(projectId,Email);
+        _logger.LogInformation(" Search On Title OR Description");
        return Ok(issue);
     }
     catch(Exception){
+         _logger.LogError("Issue Service Error");
         return BadRequest();
     }
    }
@@ -233,9 +277,11 @@ public IActionResult UpdateIssueUnderAProject(int project_id,int issue_id, [From
    {
     try{
       var issue= _issueService.SerachQueryProjectIDAssigneeEmailAND(projectId,Email);
+       _logger.LogInformation(" Serach Query Project_AND_ID AssigneeEmail");
        return Ok(issue);
     }
     catch(Exception){
+         _logger.LogError("Issue Service Error");
         return BadRequest();
     }
    }
@@ -248,9 +294,12 @@ public IActionResult UpdateIssueUnderAProject(int project_id,int issue_id, [From
       public IActionResult  SerachByType([FromQuery] Models.Issue.IssueType type)
       { try{
       var issue= _issueService.SerachByType(type);
+       _logger.LogInformation(" Serach By Type");
        return Ok(issue);
     }
     catch(Exception){
+          _logger.LogError("Issue Service Error");
+        
         return BadRequest();
     }
 
@@ -262,10 +311,13 @@ public IActionResult UpdateIssueUnderAProject(int project_id,int issue_id, [From
     [Authorize(Roles="admin,manager")]
     public IActionResult  SerachByNotAGivenType([FromQuery] Models.Issue.IssueType type)
       { try{
+
       var issue= _issueService.SerachByNotAGivenType(type);
+        _logger.LogInformation(" Serach By Not A Given Type");
        return Ok(issue);
     }
     catch(Exception){
+        _logger.LogError("Issue Service Error");
         return BadRequest();
     }
 
@@ -278,9 +330,11 @@ public IActionResult UpdateIssueUnderAProject(int project_id,int issue_id, [From
        {
         try{
       var issue= _issueService.SearchByCreatedDate(date);
+       _logger.LogInformation("  Search By Created Date");
        return Ok(issue);
     }
     catch(Exception){
+         _logger.LogError("Issue Service Error");
         return BadRequest();
     }
        }
@@ -292,9 +346,11 @@ public IActionResult UpdateIssueUnderAProject(int project_id,int issue_id, [From
        {
         try{
       var issue= _issueService.SearchByUpdatedDate(date);
+         _logger.LogInformation(" Search By Updated Date");
        return Ok(issue);
     }
     catch(Exception){
+           _logger.LogError("Issue Service Error");
         return BadRequest();
     }
        }

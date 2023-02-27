@@ -12,8 +12,10 @@ namespace TaskManagerApi.Controllers;
 [Authorize(AuthenticationSchemes = Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme)] 
 public class LabelController:ControllerBase{
     ILabelService _labelService;
-    public LabelController(ILabelService service) {
+    private readonly ILogger<Label> _logger;
+    public LabelController(ILabelService service,ILogger<Label> logger) {
         _labelService = service;
+        _logger=logger;
     }
 
 
@@ -24,8 +26,10 @@ public class LabelController:ControllerBase{
     public IActionResult DeleteLabelFromIssue(int label_id,int issue_id) {
         try {
             var model = _labelService.DeleteLabelFromIssue(label_id,issue_id);
+               _logger.LogInformation("Delete Label from issue");
             return Ok(model);
         } catch (Exception) {
+              _logger.LogError("Error -: Not able to Delete Label from issue");
             return BadRequest();
         }
     }
@@ -37,8 +41,10 @@ public class LabelController:ControllerBase{
     public IActionResult SaveLabel(Label labelModel) {
         try {
             var model = _labelService.SaveLabel(labelModel);
+              _logger.LogInformation("Save Label ");
             return Ok(model);
         } catch (Exception) {
+              _logger.LogError("Not able to save");
             return BadRequest();
         }
     }
@@ -49,8 +55,10 @@ public class LabelController:ControllerBase{
     public IActionResult DeleteLabel(int id) {
         try {
             var model = _labelService.DeleteLabel(id);
+              _logger.LogInformation("Delete Label from issue by id");
             return Ok(model);
         } catch (Exception) {
+              _logger.LogError("Not able to Delete Label from issue by id");
             return BadRequest();
         }
     }
@@ -59,9 +67,11 @@ public class LabelController:ControllerBase{
     public IActionResult GetAllLabels() {
         try {
             var employees = _labelService.GetLabelList();
+              _logger.LogInformation("Get all Label ");
             if (employees == null) return NotFound();
             return Ok(employees);
         } catch (Exception) {
+             _logger.LogError("Get all Label ");
             return BadRequest();
         
         }
@@ -73,15 +83,18 @@ public class LabelController:ControllerBase{
       {
     if (updatedLabel == null)
     {
+         _logger.LogError("Update Label Not Happen ");
     return BadRequest();
     }
     try
     { 
     _labelService.UpdateLabel(id,updatedLabel);
+     _logger.LogInformation("Update By id Label ");
     return Ok();
     }
     catch (DbUpdateConcurrencyException)
     {
+          _logger.LogError("Update Label Not Happen  some error");
     return NotFound();
     }
      }
@@ -93,10 +106,12 @@ public class LabelController:ControllerBase{
     try
     { 
     var model=  _labelService.AddLabelToIssue(label_id,issue_id);
+      _logger.LogInformation("Add label to issue ");
     return Ok(model);
     }
     catch (DbUpdateConcurrencyException)
     {
+         _logger.LogError("Not able to Add label to issue ");
     return NotFound();
     }
      }
