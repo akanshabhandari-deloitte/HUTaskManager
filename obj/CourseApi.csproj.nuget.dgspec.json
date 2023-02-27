@@ -81,6 +81,10 @@
             "System.IdentityModel.Tokens.Jwt": {
               "target": "Package",
               "version": "[6.26.1, )"
+            },
+            "log4net": {
+              "target": "Package",
+              "version": "[*, )"
             }
           },
           "imports": [

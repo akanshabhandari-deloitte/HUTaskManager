@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TaskManagerApi;
 
@@ -10,29 +11,15 @@ using TaskManagerApi;
 namespace CourseApi.Migrations
 {
     [DbContext(typeof(TaskManagerContext))]
-    partial class TaskManagerContextModelSnapshot : ModelSnapshot
+    [Migration("20230226132032_Label2")]
+    partial class Label2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "6.0.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
-
-            modelBuilder.Entity("IssueLabel", b =>
-                {
-                    b.Property<int>("LabelId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("issueId")
-                        .HasColumnType("int");
-
-                    b.HasKey("LabelId", "issueId");
-
-                    b.HasIndex("issueId");
-
-                    b.ToTable("IssueLabel");
-                });
 
             modelBuilder.Entity("TaskManagerApi.Models.Employee", b =>
                 {
@@ -72,9 +59,6 @@ namespace CourseApi.Migrations
                     b.Property<int?>("AssgineeEmployeeId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("Created_At")
-                        .HasColumnType("datetime(6)");
-
                     b.Property<string>("Description")
                         .HasColumnType("longtext");
 
@@ -92,9 +76,6 @@ namespace CourseApi.Migrations
 
                     b.Property<int>("Type")
                         .HasColumnType("int");
-
-                    b.Property<DateTime>("Updated_At")
-                        .HasColumnType("datetime(6)");
 
                     b.HasKey("Id");
 
@@ -116,7 +97,12 @@ namespace CourseApi.Migrations
                     b.Property<string>("_label")
                         .HasColumnType("longtext");
 
+                    b.Property<int?>("issueId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("issueId");
 
                     b.ToTable("Labels");
                 });
@@ -140,21 +126,6 @@ namespace CourseApi.Migrations
                     b.ToTable("Projects");
                 });
 
-            modelBuilder.Entity("IssueLabel", b =>
-                {
-                    b.HasOne("TaskManagerApi.Models.Label", null)
-                        .WithMany()
-                        .HasForeignKey("LabelId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("TaskManagerApi.Models.Issue", null)
-                        .WithMany()
-                        .HasForeignKey("issueId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("TaskManagerApi.Models.Issue", b =>
                 {
                     b.HasOne("TaskManagerApi.Models.Employee", "Assginee")
@@ -176,6 +147,15 @@ namespace CourseApi.Migrations
                     b.Navigation("Reporter");
                 });
 
+            modelBuilder.Entity("TaskManagerApi.Models.Label", b =>
+                {
+                    b.HasOne("TaskManagerApi.Models.Issue", "issue")
+                        .WithMany("Label")
+                        .HasForeignKey("issueId");
+
+                    b.Navigation("issue");
+                });
+
             modelBuilder.Entity("TaskManagerApi.Models.Project", b =>
                 {
                     b.HasOne("TaskManagerApi.Models.Employee", "Creator")
@@ -188,6 +168,11 @@ namespace CourseApi.Migrations
             modelBuilder.Entity("TaskManagerApi.Models.Employee", b =>
                 {
                     b.Navigation("Projects");
+                });
+
+            modelBuilder.Entity("TaskManagerApi.Models.Issue", b =>
+                {
+                    b.Navigation("Label");
                 });
 
             modelBuilder.Entity("TaskManagerApi.Models.Project", b =>

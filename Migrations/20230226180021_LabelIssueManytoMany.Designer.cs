@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TaskManagerApi;
 
@@ -10,9 +11,10 @@ using TaskManagerApi;
 namespace CourseApi.Migrations
 {
     [DbContext(typeof(TaskManagerContext))]
-    partial class TaskManagerContextModelSnapshot : ModelSnapshot
+    [Migration("20230226180021_LabelIssueManytoMany")]
+    partial class LabelIssueManytoMany
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -72,9 +74,6 @@ namespace CourseApi.Migrations
                     b.Property<int?>("AssgineeEmployeeId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("Created_At")
-                        .HasColumnType("datetime(6)");
-
                     b.Property<string>("Description")
                         .HasColumnType("longtext");
 
@@ -92,9 +91,6 @@ namespace CourseApi.Migrations
 
                     b.Property<int>("Type")
                         .HasColumnType("int");
-
-                    b.Property<DateTime>("Updated_At")
-                        .HasColumnType("datetime(6)");
 
                     b.HasKey("Id");
 
