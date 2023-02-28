@@ -261,7 +261,7 @@ public List<Issue> GetIssuesByProject(int id)
     {
             List<Issue> list=new List<Issue>();
             try{
-                list=_context.Issues.Include(p=>p.Project).Include(p=>p.Assginee).Include(p=>p.Reporter).Where(p=>p.Created_At<=date).ToList();
+                list=_context.Issues.Include(p=>p.Project).Include(p=>p.Assginee).Include(p=>p.Reporter).Where(p=>p.Updated_At<=date).ToList();
                 Console.Write("--------"+list);
             }
               catch(Exception e)
